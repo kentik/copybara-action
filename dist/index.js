@@ -6174,6 +6174,7 @@ const action = new copybaraAction_1.CopybaraAction({
     // Push config
     push: {
         include: core.getInput("push_include").split(" "),
+        filesDest: core.getInput("push_files_dest").split(" "),
         exclude: core.getInput("push_exclude").split(" "),
         move: core.getInput("push_move").split(/\r?\n/),
         replace: core.getInput("push_replace").split(/\r?\n/),
@@ -6181,6 +6182,7 @@ const action = new copybaraAction_1.CopybaraAction({
     // PR config
     pr: {
         include: core.getInput("pr_include").split(" "),
+        filesDest: core.getInput("push_files_dest").split(" "),
         exclude: core.getInput("pr_exclude").split(" "),
         move: core.getInput("pr_move").split(/\r?\n/),
         replace: core.getInput("pr_replace").split(/\r?\n/),
@@ -6278,7 +6280,7 @@ exports.getUserAgent = getUserAgent;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.copyBaraSky = void 0;
-exports.copyBaraSky = (sotRepo, sotBranch, destinationRepo, destinationBranch, committer, localSot, pushInclude, pushExclude, pushTransformations, prInclude, prExclude, prTransformations) => `
+exports.copyBaraSky = (sotRepo, sotBranch, destinationRepo, destinationBranch, committer, localSot, pushInclude, pushFilesDest, pushExclude, pushTransformations, prInclude, prExclude, prTransformations) => `
 # Variables
 SOT_REPO = "${sotRepo}"
 SOT_BRANCH = "${sotBranch}"
@@ -6288,6 +6290,7 @@ COMMITTER = "${committer}"
 LOCAL_SOT = "${localSot}"
 
 PUSH_INCLUDE = [${pushInclude}]
+PUSH_FILES_DEST = [${pushFilesDest}]
 PUSH_EXCLUDE = [${pushExclude}]
 PUSH_TRANSFORMATIONS = [${pushTransformations}
 ]
@@ -6309,6 +6312,7 @@ core.workflow(
         push = DESTINATION_BRANCH,
     ),
     origin_files = glob(PUSH_INCLUDE, exclude = PUSH_EXCLUDE),
+    destination_files = glob(PUSH_FILES_DEST),
     authoring = authoring.pass_thru(default = COMMITTER),
     mode = "ITERATIVE",
     transformations = [
@@ -6329,8 +6333,10 @@ core.workflow(
         destination_ref = SOT_BRANCH,
         integrates = [],
     ),
+
+    origin_files = glob(PUSH_FILES_DEST, exclude = PR_EXCLUDE),
     destination_files = glob(PUSH_INCLUDE, exclude = PUSH_EXCLUDE),
-    origin_files = glob(PR_INCLUDE if PR_INCLUDE else ["**"], exclude = PR_EXCLUDE),
+
     authoring = authoring.pass_thru(default = COMMITTER),
     mode = "CHANGE_REQUEST",
     set_rev_id = False,
@@ -9892,7 +9898,7 @@ class CopyBara {
     }
     static getConfig(workflow, config) {
         this.validateConfig(config, workflow);
-        return copy_bara_sky_1.copyBaraSky(`git@github.com:${config.sot.repo}.git`, config.sot.branch, `git@github.com:${config.destination.repo}.git`, config.destination.branch, config.committer, "file:///usr/src/app", this.generateInExcludes(config.push.include), this.generateInExcludes(config.push.exclude), this.generateTransformations(config.push.move, config.push.replace, "push"), this.generateInExcludes(config.pr.include), this.generateInExcludes(config.pr.exclude), this.generateTransformations(config.pr.move, config.pr.replace, "pr"));
+        return copy_bara_sky_1.copyBaraSky(`git@github.com:${config.sot.repo}.git`, config.sot.branch, `git@github.com:${config.destination.repo}.git`, config.destination.branch, config.committer, "file:///usr/src/app", this.generateInExcludes(config.push.include), this.generateInExcludes(config.push.filesDest), this.generateInExcludes(config.push.exclude), this.generateTransformations(config.push.move, config.push.replace, "push"), this.generateInExcludes(config.pr.include), this.generateInExcludes(config.pr.exclude), this.generateTransformations(config.pr.move, config.pr.replace, "pr"));
     }
     exec(dockerParams = [], copybaraOptions = []) {
         return __awaiter(this, void 0, void 0, function* () {

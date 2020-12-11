@@ -21,6 +21,7 @@ const action = new CopybaraAction({
   // Push config
   push: {
     include: core.getInput("push_include").split(" "),
+    filesDest: core.getInput("push_files_dest").split(" "),
     exclude: core.getInput("push_exclude").split(" "),
     move: core.getInput("push_move").split(/\r?\n/),
     replace: core.getInput("push_replace").split(/\r?\n/),
@@ -29,6 +30,7 @@ const action = new CopybaraAction({
   // PR config
   pr: {
     include: core.getInput("pr_include").split(" "),
+    filesDest: core.getInput("push_files_dest").split(" "),
     exclude: core.getInput("pr_exclude").split(" "),
     move: core.getInput("pr_move").split(/\r?\n/),
     replace: core.getInput("pr_replace").split(/\r?\n/),

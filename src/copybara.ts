@@ -39,6 +39,7 @@ export class CopyBara {
       config.committer,
       "file:///usr/src/app",
       this.generateInExcludes(config.push.include),
+      this.generateInExcludes(config.push.filesDest),
       this.generateInExcludes(config.push.exclude),
       this.generateTransformations(config.push.move, config.push.replace, "push"),
       this.generateInExcludes(config.pr.include),
@@ -171,6 +172,7 @@ export type DockerConfig = {
 export type WorkflowConfig = {
   include: string[];
   exclude: string[];
+  filesDest: string[];
   move: string[];
   replace: string[];
 };

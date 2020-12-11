@@ -6,6 +6,7 @@ export const copyBaraSky = (
   committer: string,
   localSot: string,
   pushInclude: string,
+  pushFilesDest: string,
   pushExclude: string,
   pushTransformations: string,
   prInclude: string,
@@ -21,6 +22,7 @@ COMMITTER = "${committer}"
 LOCAL_SOT = "${localSot}"
 
 PUSH_INCLUDE = [${pushInclude}]
+PUSH_FILES_DEST = [${pushFilesDest}]
 PUSH_EXCLUDE = [${pushExclude}]
 PUSH_TRANSFORMATIONS = [${pushTransformations}
 ]
@@ -42,6 +44,7 @@ core.workflow(
         push = DESTINATION_BRANCH,
     ),
     origin_files = glob(PUSH_INCLUDE, exclude = PUSH_EXCLUDE),
+    destination_files = glob(PUSH_FILES_DEST),
     authoring = authoring.pass_thru(default = COMMITTER),
     mode = "ITERATIVE",
     transformations = [
@@ -62,8 +65,10 @@ core.workflow(
         destination_ref = SOT_BRANCH,
         integrates = [],
     ),
+
+    origin_files = glob(PUSH_FILES_DEST, exclude = PR_EXCLUDE),
     destination_files = glob(PUSH_INCLUDE, exclude = PUSH_EXCLUDE),
-    origin_files = glob(PR_INCLUDE if PR_INCLUDE else ["**"], exclude = PR_EXCLUDE),
+
     authoring = authoring.pass_thru(default = COMMITTER),
     mode = "CHANGE_REQUEST",
     set_rev_id = False,
