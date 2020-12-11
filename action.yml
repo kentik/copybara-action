@@ -34,6 +34,10 @@ inputs:
     required: false
     default: "**"
 
+  push_files_dest:
+    description: "Destination files to include when pushing from SoT => Destination (space separated globs)."
+    required: true
+
   push_exclude:
     description: "Files to exclude when pushing from SoT => Destination (space separated globs). Defaults to none."
     required: false
